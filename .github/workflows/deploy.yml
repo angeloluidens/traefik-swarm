@@ -1,4 +1,4 @@
-name: Deploy to production swarm
+name: Deploy to Production Swarm
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
         envkey_KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
         file_name: .env
 
-    - name: Deploy to Docker swarm
+    - name: Deploy to Docker Swarm
       uses: knipknap/docker-swarm-deployment-action@master
       with:
         remote_docker_host: ${{ secrets.DOCKER_SSH_HOST }}
