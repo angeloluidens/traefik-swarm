@@ -28,10 +28,10 @@ services:
         - traefik.http.middlewares.https5000-redirect.redirectscheme.permanent=true
         - traefik.http.middlewares.admin-auth.basicauth.users=${TRAEFIK_DASHBOARD_USERNAME?Variable not set}:${TRAEFIK_DASHBOARD_HASHED_PASSWORD?Variable not set}
         # Use the special Traefik service api@internal with the web UI/Dashboard
-        - traefik.http.routers.traefik-dashboard-http.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN?Variable not set}`)
+        - traefik.http.routers.traefik-dashboard-http.rule=Host(`traefik.${TRAEFIK_DASHBOARD_DOMAIN?Variable not set}`)
         - traefik.http.routers.traefik-dashboard-http.entrypoints=http
         - traefik.http.routers.traefik-dashboard-http.middlewares=https-redirect
-        - traefik.http.routers.traefik-dashboard-https.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN?Variable not set}`)
+        - traefik.http.routers.traefik-dashboard-https.rule=Host(`traefik.${TRAEFIK_DASHBOARD_DOMAIN?Variable not set}`)
         - traefik.http.routers.traefik-dashboard-https.entrypoints=https
         - traefik.http.routers.traefik-dashboard-https.tls=true
         - traefik.http.routers.traefik-dashboard-https.tls.certresolver=le
@@ -87,10 +87,10 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.middlewares.registry-auth.basicauth.users=${REGISTRY_USERNAME?Variable not set}:${REGISTRY_HASHED_PASSWORD?Variable not set}
-        - traefik.http.routers.registry-http.rule=Host(`${REGISTRY_DOMAIN?Variable not set}`)
+        - traefik.http.routers.registry-http.rule=Host(`registry.${REGISTRY_DOMAIN?Variable not set}`)
         - traefik.http.routers.registry-http.entrypoints=http
         - traefik.http.routers.registry-http.middlewares=https5000-redirect
-        - traefik.http.routers.registry-https.rule=Host(`${REGISTRY_DOMAIN?Variable not set}`)
+        - traefik.http.routers.registry-https.rule=Host(`registry.${REGISTRY_DOMAIN?Variable not set}`)
         - traefik.http.routers.registry-https.entrypoints=https5000
         - traefik.http.routers.registry-https.tls=true
         - traefik.http.routers.registry-https.tls.certresolver=le
@@ -322,6 +322,100 @@ services:
         - traefik.http.routers.keycloak-https.tls=true
         - traefik.http.routers.keycloak-https.tls.certresolver=le
         - traefik.http.services.keycloak.loadbalancer.server.port=8080
+
+  # Docker-GC - Automatic Docker Garbage Collection 
+  # Create docker-gc-exclude file
+  dockergc:
+  #  env_file:                     # Centralized Enviroment Variables
+  #    - /home/ebastore/eba.env
+    image: clockworksoul/docker-gc-cron:latest
+    container_name: docker-gc
+    hostname: docker-gc
+    restart: unless-stopped
+    network_mode: none
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    #  - ${USERDIR}/docker/docker-gc/docker-gc-exclude:/etc/docker-gc-exclude
+    environment:
+      CRON: 0 0 * * *
+      FORCE_IMAGE_REMOVAL: 1
+      FORCE_CONTAINER_REMOVAL: 0
+      GRACE_PERIOD_SECONDS: 604800
+      DRY_RUN: 0
+      CLEAN_UP_VOLUMES: 1
+      TZ: ${TZ}
+
+  # Ouroboros - Automatic Docker Container Updates
+  # https://github.com/pyouroboros/ouroboros
+  ouroboros:
+  #  env_file:                     # Centralized Enviroment Variables
+  #    - /home/ebastore/eba.env
+    image: pyouroboros/ouroboros
+    container_name: ouroboros
+    hostname: ouroboros
+    restart: unless-stopped
+    networks:
+      - default
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: ${TZ}
+      INTERVAL: 86400
+      LOG_LEVEL: debug
+      SELF_UPDATE: "true"
+      CLEANUP: "true"
+      IGNORE: traefik #influxdb hassio_dns homeassistant hassio_supervisor addon_core_check_config addon_62c7908d_autobackup plexms
+      #NOTIFIERS: 'tgram://${TGRAM_BOT_TOKEN}/${TGRAM_CHAT_ID}/'
+
+  # Dozzle is a real-time log viewer for Docker. It's free. It's small. And it's right in your browser.
+  # https://dozzle.dev
+  dozzle:
+  #  env_file:                     # Centralized Enviroment Variables
+  #    - /home/ebastore/eba.env
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    environment:
+    #  - DOZZLE_ADDR='8008'
+    #  - DOZZLE_BASE='/'
+    #  - DOZZLE_LEVEL='debug'
+    #  - DOZZLE_SHOWALL='true' # true or false
+    #  - DOCKER_API_VERSION	='1.38'
+      - DOZZLE_TAILSIZE=300
+      - DOZZLE_FILTER=status=running
+    #ports:
+    #  - 8080:8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == manager
+      replicas: 1
+      update_config:
+        order: start-first		# get new container running first before removing old, for less downtime
+      rollback_config:
+        order: start-first		# get new container running first before removing old, for less downtime
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.dozzle.rule=Host(`dozzle.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.dozzle.entrypoints=http
+        - traefik.http.routers.dozzle-secure.middlewares=https-redirect
+        - traefik.http.routers.dozzle-secure.rule=Host(`dozzle.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.dozzle-secure.entrypoints=https
+        - traefik.http.routers.dozzle-secure.tls=true
+        - traefik.http.routers.dozzle-secure.tls.certresolver=le
+        - traefik.http.routers.dozzle-secure.service=dozzle
+        - traefik.http.services.dozzle.loadbalancer.server.port=8080
+      #  - traefik.http.routers.dozzle-auth.middlewares=auth-middleware
+      #  - traefik.http.middlewares.auth-middleware.basicauth.usersfile=/users_credentials
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   db-data:
