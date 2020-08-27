@@ -94,7 +94,7 @@ services:
         - traefik.http.routers.registry-https.entrypoints=https5000
         - traefik.http.routers.registry-https.tls=true
         - traefik.http.routers.registry-https.tls.certresolver=le
-        - traefik.http.routers.registry-https.middlewares=registry-auth
+     #   - traefik.http.routers.registry-https.middlewares=registry-auth
         - traefik.http.services.registry.loadbalancer.server.port=5000
 
   gateone:
@@ -113,7 +113,7 @@ services:
         - traefik.http.routers.gateone-https.entrypoints=https
         - traefik.http.routers.gateone-https.tls=true
         - traefik.http.routers.gateone-https.tls.certresolver=le
-        - traefik.http.routers.gateone-https.middlewares=admin-auth
+     #   - traefik.http.routers.gateone-https.middlewares=admin-auth
         - traefik.http.services.gateone.loadbalancer.server.port=8000
         - traefik.http.services.gateone.loadbalancer.server.scheme=https
 
@@ -256,25 +256,6 @@ services:
         - traefik.http.routers.droppy-https.tls.certresolver=le
         - traefik.http.services.droppy.loadbalancer.server.port=8989
 
-  webserver:
-    image: nginx:latest
-    volumes:
-      - droppy-public:/usr/share/nginx/html:ro
-    deploy:
-      labels:
-        - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.constraint-label=traefik-public
-        - traefik.http.routers.traefik-public-http.rule=Host(`${DOMAIN?Variable not set}`)
-        - traefik.http.routers.traefik-public-http.entrypoints=http
-        - traefik.http.routers.traefik-public-http.middlewares=https-redirect
-        - traefik.http.routers.traefik-public-https.rule=Host(`${DOMAIN?Variable not set}`)
-        - traefik.http.routers.traefik-public-https.entrypoints=https
-        - traefik.http.routers.traefik-public-https.tls=true
-        - traefik.http.routers.traefik-public-https.tls.certresolver=le
-        - traefik.http.services.traefik-public.loadbalancer.server.port=80
-    networks:
-      - traefik-public
 
   sso-mysql:
     image: mysql:5.7
