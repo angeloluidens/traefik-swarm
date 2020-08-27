@@ -33,7 +33,12 @@ jobs:
         envkey_KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
         file_name: .env
 
-    - name: Deploy to Docker swarm
+    - name: Install DigitalOcean Control (doctl)
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+    - name: Deploy to Docker Swarm
       uses: knipknap/docker-swarm-deployment-action@master
       with:
         remote_docker_host: ${{ secrets.DOCKER_SSH_HOST }}
