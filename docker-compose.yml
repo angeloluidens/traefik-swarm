@@ -367,55 +367,7 @@ services:
       IGNORE: traefik #influxdb hassio_dns homeassistant hassio_supervisor addon_core_check_config addon_62c7908d_autobackup plexms
       #NOTIFIERS: 'tgram://${TGRAM_BOT_TOKEN}/${TGRAM_CHAT_ID}/'
 
-  # Dozzle is a real-time log viewer for Docker. It's free. It's small. And it's right in your browser.
-  # https://dozzle.dev
-  dozzle:
-  #  env_file:                     # Centralized Enviroment Variables
-  #    - /home/ebastore/eba.env
-    container_name: dozzle
-    image: amir20/dozzle:latest
-    environment:
-    #  - DOZZLE_ADDR='8008'
-    #  - DOZZLE_BASE='/'
-    #  - DOZZLE_LEVEL='debug'
-    #  - DOZZLE_SHOWALL='true' # true or false
-    #  - DOCKER_API_VERSION	='1.38'
-      - DOZZLE_TAILSIZE=300
-      - DOZZLE_FILTER=status=running
-    #ports:
-    #  - 8080:8080
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - proxy
-    deploy:
-      mode: replicated
-      placement:
-        constraints:
-          - node.role == manager
-      replicas: 1
-      update_config:
-        order: start-first		# get new container running first before removing old, for less downtime
-      rollback_config:
-        order: start-first		# get new container running first before removing old, for less downtime
-      labels:
-        - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.constraint-label=traefik-public
-        - traefik.http.routers.dozzle.rule=Host(`dozzle.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.dozzle.entrypoints=http
-        - traefik.http.routers.dozzle-secure.middlewares=https-redirect
-        - traefik.http.routers.dozzle-secure.rule=Host(`dozzle.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.dozzle-secure.entrypoints=https
-        - traefik.http.routers.dozzle-secure.tls=true
-        - traefik.http.routers.dozzle-secure.tls.certresolver=le
-        - traefik.http.routers.dozzle-secure.service=dozzle
-        - traefik.http.services.dozzle.loadbalancer.server.port=8080
-      #  - traefik.http.routers.dozzle-auth.middlewares=auth-middleware
-      #  - traefik.http.middlewares.auth-middleware.basicauth.usersfile=/users_credentials
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+
 
 volumes:
   db-data:
