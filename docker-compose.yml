@@ -120,50 +120,7 @@ services:
         - traefik.http.services.gateone.loadbalancer.server.port=8000
         - traefik.http.services.gateone.loadbalancer.server.scheme=https
 
-  # Eclipse Theia is an extensible cloud IDE running on a remote server and accessible from a web browser. 
-  # https://theia-ide.org
-  theiaide:
-    image: theiaide/theia:next
-    init: true
-    environment:
-      - VIRTUAL_HOST=theiaide.stargue.dev
-    #  - LETSENCRYPT_HOST=theiaide.stargue.net
-    hostname: theiaide
-  #  container_name: theiaide
-    restart: unless-stopped
-  #  privileged: true
-  #  network_mode: host
-    networks:
-      - traefik-public
-    user: root
-  #  ports:
-  #    - 3000:3000
-    pid: host
-    volumes:
-      - droppy:/home/project:cached
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    deploy:
-    #  mode: replicated
-    #  replicas: 1
-    #  update_config:
-    #    order: start-first		# get new container running first before removing old, for less downtime
-    #  rollback_config:
-    #    order: start-first		# get new container running first before removing old, for less downtime
-      labels:
-        - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.constraint-label=traefik-public
-        - traefik.http.routers.theiaide-http.rule=Host(`theiaide.${DOMAIN?Variable not set}`)
-	- traefik.http.routers.theiaide-http.entrypoints=http
-        - traefik.http.routers.theiaide-http.middlewares=https-redirect
-        - traefik.http.routers.theiaide-https.rule=Host(`theiaide.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.theiaide-https.entrypoints=https
-        - traefik.http.routers.theiaide-https.tls=true
-        - traefik.http.routers.theiaide-https.tls.certresolver=le
-        - traefik.http.routers.theiaide-https-https-https.service=theiaide
-     #   - traefik.http.routers.theiadie-https.middlewares=admin-auth
-        - traefik.http.services.theiaide.loadbalancer.server.port=3000
-        - traefik.http.services.theiaide.loadbalancer.server.scheme=https	
+	
 
   # Dozzle is a real-time log viewer for Docker. It's free. It's small. And it's right in your browser.
   # https://dozzle.dev
