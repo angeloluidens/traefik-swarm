@@ -36,7 +36,7 @@ services:
         - traefik.http.routers.traefik-dashboard-https.tls=true
         - traefik.http.routers.traefik-dashboard-https.tls.certresolver=le
         - traefik.http.routers.traefik-dashboard-https.service=api@internal
-        - traefik.http.routers.theiaide.service=traefik       
+        - traefik.http.routers.traefik.service=traefik       
         - traefik.http.routers.traefik-dashboard-https.middlewares=admin-auth
         - traefik.http.services.traefik-dashboard-https.loadbalancer.server.port=8080
     volumes:
@@ -95,7 +95,7 @@ services:
         - traefik.http.routers.registry-https.entrypoints=https5000
         - traefik.http.routers.registry-https.tls=true
         - traefik.http.routers.registry-https.tls.certresolver=le
-        - traefik.http.routers.theiaide.service=registry
+        - traefik.http.routers.registry-https.service=registry
      #   - traefik.http.routers.registry-https.middlewares=registry-auth
         - traefik.http.services.registry.loadbalancer.server.port=5000
 
@@ -115,7 +115,7 @@ services:
         - traefik.http.routers.gateone-https.entrypoints=https
         - traefik.http.routers.gateone-https.tls=true
         - traefik.http.routers.gateone-https.tls.certresolver=le
-        - traefik.http.routers.theiaide.service=gateone
+        - traefik.http.routers.gateone-https.service=gateone
      #   - traefik.http.routers.gateone-https.middlewares=admin-auth
         - traefik.http.services.gateone.loadbalancer.server.port=8000
         - traefik.http.services.gateone.loadbalancer.server.scheme=https
@@ -160,7 +160,7 @@ services:
         - traefik.http.routers.theiaide-https.entrypoints=https
         - traefik.http.routers.theiaide-https.tls=true
         - traefik.http.routers.theiaide-https.tls.certresolver=le
-        - traefik.http.routers.theiaide.service=theiaide
+        - traefik.http.routers.theiaide-https-https-https.service=theiaide
      #   - traefik.http.routers.theiadie-https.middlewares=admin-auth
         - traefik.http.services.theiaide.loadbalancer.server.port=3000
         - traefik.http.services.theiaide.loadbalancer.server.scheme=https	
@@ -270,7 +270,7 @@ services:
         - traefik.http.routers.swarmpit-https.entrypoints=https
         - traefik.http.routers.swarmpit-https.tls=true
         - traefik.http.routers.swarmpit-https.tls.certresolver=le
-        - traefik.http.routers.dozzle-https.service=swarmpit
+        - traefik.http.routers.swaarmpit-https.service=swarmpit
         - traefik.http.services.swarmpit.loadbalancer.server.port=8080
 
   db:
@@ -349,7 +349,7 @@ services:
         - traefik.http.routers.droppy-https.entrypoints=https
         - traefik.http.routers.droppy-https.tls=true
         - traefik.http.routers.droppy-https.tls.certresolver=le
-        - traefik.http.routers.dozzle-https.service=droppy
+        - traefik.http.routers.droppy-https.service=droppy
         - traefik.http.services.droppy.loadbalancer.server.port=8989
 
 
@@ -398,7 +398,7 @@ services:
         - traefik.http.routers.keycloak-https.entrypoints=https
         - traefik.http.routers.keycloak-https.tls=true
         - traefik.http.routers.keycloak-https.tls.certresolver=le
-        - traefik.http.routers.dozzle-https.service=keycloak
+        - traefik.http.routers.keycloak-https.service=keycloak
         - traefik.http.services.keycloak.loadbalancer.server.port=8080
 
   # Docker-GC - Automatic Docker Garbage Collection 
