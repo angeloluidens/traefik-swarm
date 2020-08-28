@@ -142,10 +142,10 @@ services:
         constraints:
           - node.role == manager
     #  replicas: 1
-      update_config:
-        order: start-first		# get new container running first before removing old, for less downtime
-      rollback_config:
-        order: start-first		# get new container running first before removing old, for less downtime
+    #  update_config:
+    #    order: start-first		# get new container running first before removing old, for less downtime
+    #  rollback_config:
+    #    order: start-first		# get new container running first before removing old, for less downtime
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
