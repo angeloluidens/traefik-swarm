@@ -162,7 +162,7 @@ services:
         - traefik.http.routers.dozzle-https.entrypoints=https
         - traefik.http.routers.dozzle-https.tls=true
         - traefik.http.routers.dozzle-https.tls.certresolver=le
-        - traefik.http.routers.dozzle-https.service=dozzle
+      #  - traefik.http.routers.dozzle-https.service=dozzle
       #  - traefik.http.routers.dozzle-https.middlewares=admin-auth
         - traefik.http.services.dozzle.loadbalancer.server.port=8080
     volumes:
@@ -306,7 +306,7 @@ services:
         - traefik.http.routers.droppy-https.entrypoints=https
         - traefik.http.routers.droppy-https.tls=true
         - traefik.http.routers.droppy-https.tls.certresolver=le
-        - traefik.http.routers.droppy-https.service=droppy
+      #  - traefik.http.routers.droppy-https.service=droppy
         - traefik.http.services.droppy.loadbalancer.server.port=8989
 
 
