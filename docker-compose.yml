@@ -143,8 +143,8 @@ services:
       - /home/ebastore/theiaide:/home/project:cached # Use this if you want to add a glances.conf file
       - /var/run/docker.sock:/var/run/docker.sock:ro
     deploy:
-      mode: replicated
-      replicas: 1
+    #  mode: replicated
+    #  replicas: 1
     #  update_config:
     #    order: start-first		# get new container running first before removing old, for less downtime
     #  rollback_config:
