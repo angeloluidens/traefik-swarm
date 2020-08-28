@@ -120,7 +120,6 @@ services:
         - traefik.http.services.gateone.loadbalancer.server.port=8000
         - traefik.http.services.gateone.loadbalancer.server.scheme=https
 
-	
 
   # Dozzle is a real-time log viewer for Docker. It's free. It's small. And it's right in your browser.
   # https://dozzle.dev
