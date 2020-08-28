@@ -132,16 +132,16 @@ services:
     #ports:
     #  - 8080:8080
     restart: unless-stopped
-  #  security_opt:
-  #    - no-new-privileges:true
+    security_opt:
+      - no-new-privileges:true
     networks:
       - traefik-public
     deploy:
-      mode: replicated
+    #  mode: replicated
       placement:
         constraints:
           - node.role == manager
-      replicas: 1
+    #  replicas: 1
       update_config:
         order: start-first		# get new container running first before removing old, for less downtime
       rollback_config:
