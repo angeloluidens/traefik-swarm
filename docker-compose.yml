@@ -154,7 +154,7 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         - traefik.http.routers.theiaide-http.rule=Host(`theiaide.${DOMAIN?Variable not set}`)
-	      - traefik.http.routers.theiaide-http.entrypoints=http
+	- traefik.http.routers.theiaide-http.entrypoints=http
         - traefik.http.routers.theiaide-http.middlewares=https-redirect
         - traefik.http.routers.theiaide-https.rule=Host(`theiaide.${DOMAIN?Variable not set}`)
         - traefik.http.routers.theiaide-https.entrypoints=https
