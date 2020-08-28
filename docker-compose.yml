@@ -140,7 +140,7 @@ services:
   #    - 3000:3000
     pid: host
     volumes:
-      - /home/ebastore/theiaide:/home/project:cached # Use this if you want to add a glances.conf file
+      - droppy:/home/project:cached
       - /var/run/docker.sock:/var/run/docker.sock:ro
     deploy:
     #  mode: replicated
