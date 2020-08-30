@@ -399,7 +399,7 @@ services:
       GRACE_PERIOD_SECONDS: 604800
       DRY_RUN: 0
       CLEAN_UP_VOLUMES: 1
-      TZ: ${TZ}
+      TZ: ${TZ?Variable not set}
 
   # Ouroboros - Automatic Docker Container Updates
   # https://github.com/pyouroboros/ouroboros
@@ -415,7 +415,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      TZ: ${TZ}
+      TZ: ${TZ?Variable not set}
       INTERVAL: 86400
       LOG_LEVEL: debug
       SELF_UPDATE: "true"
